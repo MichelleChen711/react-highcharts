@@ -1,14 +1,15 @@
 var React = require('react');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 var win = typeof global === 'undefined' ? window : global;
 
 module.exports = function (chartType, Highcharts){
   var displayName = 'Highcharts' + chartType;
   var result = React.createClass({
+    mixins: [PureRenderMixin],
     displayName: displayName,
 
     propTypes: {
       config: React.PropTypes.object.isRequired,
-      isPureConfig: React.PropTypes.bool,
       neverReflow: React.PropTypes.bool,
       callback: React.PropTypes.func,
       domProps: React.PropTypes.object
@@ -37,14 +38,6 @@ module.exports = function (chartType, Highcharts){
           this.chart && this.chart.options && this.chart.reflow();
         });
       }
-    },
-
-    shouldComponentUpdate(nextProps) {
-      if (nextProps.neverReflow || (nextProps.isPureConfig && this.props.config === nextProps.config)) {
-        return true;
-      }
-      this.renderChart(nextProps.config);
-      return false;
     },
 
     getChart: function (){
